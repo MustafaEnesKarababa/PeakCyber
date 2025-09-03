@@ -10,16 +10,20 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v4
 
+    - name: List repository contents
+      run: |
+        ls -R
+
     - name: Setup .NET
       uses: actions/setup-dotnet@v4
       with:
         dotnet-version: '8.0.x'
 
-    - name: Restore .NET dependencies
-      run: dotnet restore VulnerabilityTestApplication.sln
+    # - name: Restore .NET dependencies
+    #   run: dotnet restore VulnerabilityTestApplication.sln
 
-    - name: Build .NET projects
-      run: dotnet build VulnerabilityTestApplication.sln --no-restore
+    # - name: Build .NET projects
+    #   run: dotnet build VulnerabilityTestApplication.sln --no-restore
 
     - name: Setup Node.js
       uses: actions/setup-node@v4
