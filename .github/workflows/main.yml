@@ -1,0 +1,42 @@
+name: CI Pipeline
+
+on: [push]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: List repository contents
+      run: |
+        ls -R
+
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: '8.0.x'
+
+    - name: Restore .NET dependencies
+      run: dotnet restore VulnerabilityTestApplication.sln
+
+    - name: Build .NET projects
+      run: dotnet build VulnerabilityTestApplication.sln --no-restore
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20'
+
+    - name: Install Next.js dependencies
+      run: npm install
+      working-directory: ./www.vulnerabilityscan.com
+
+    - name: Build Next.js project
+      run: npm run build
+      working-directory: ./www.vulnerabilityscan.com
+
+    - name: Build Docker images
+      run: docker-compose build

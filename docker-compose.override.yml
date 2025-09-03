@@ -1,0 +1,30 @@
+services:
+  api:
+    build:
+      context: ./VulnerabilityTestApplication
+      dockerfile: Dockerfile
+      target: build
+    volumes:
+      - ./VulnerabilityTestApplication:/src
+      - //var/run/docker.sock:/var/run/docker.sock # Mount Docker socket for Docker-in-Docker functionality
+    command: dotnet watch run --no-launch-profile --project ./VulnerabilityTest.API.csproj
+
+  notifier:
+    build:
+      context: ./VulnerabilityTestApplication
+      dockerfile: Dockerfile.notifier
+      target: build
+    volumes:
+      - ./VulnerabilityTestApplication:/src
+    command: dotnet watch run --no-launch-profile --project ./VulnerabilityTest.Notifier.csproj
+
+  frontend:
+    build:
+      context: ./www.vulnerabilityscan.com
+      dockerfile: Dockerfile
+      args:
+        NEXT_PUBLIC_API_URL: http://localhost:5000
+    volumes:
+      - ./www.vulnerabilityscan.com:/app
+      - /app/node_modules
+    command: npm run dev
